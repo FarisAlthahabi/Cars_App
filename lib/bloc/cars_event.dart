@@ -8,15 +8,22 @@ class GetCarsEvent extends CarsEvent {}
 
 class NavigateToCarDetailsPageEvent extends CarsEvent {
   CarModel car;
-  String color;
+  Color color;
   NavigateToCarDetailsPageEvent({
     required this.car,
     required this.color,
   });
 }
 
-class NavigateToAddCarPageEvent {}
+class NavigateToAddCarPageEvent extends CarsEvent {}
 
-class NavigateToDeleteCarPageEvent {}
+class NavigateToDeleteCarPageEvent extends CarsEvent {}
 
-class NavigateToUpdateCarPageEvent {}
+class NavigateToUpdateCarPageEvent extends CarsEvent {}
+
+class AddCarEvent extends CarsEvent {
+  CarModel car;
+  AddCarEvent({
+    required this.car,
+  });
+}

@@ -26,7 +26,7 @@ class ShowCarDetailsPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Image.network(car.avatar , scale:0.4 ,) ,
+            Image.network(car.avatar , scale:0.4 , errorBuilder: (context, error, stackTrace) => FlutterLogo(),) ,
              Divider(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

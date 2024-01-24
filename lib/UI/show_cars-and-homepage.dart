@@ -3,25 +3,71 @@ import 'package:cars_app/UI/delete-car.dart';
 import 'package:cars_app/UI/show-car-details.dart';
 import 'package:cars_app/UI/update-car.dart';
 import 'package:cars_app/bloc/cars_bloc.dart';
+import 'package:cars_app/model/car-model.dart';
+import 'package:cars_app/model/cars-model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:string_to_color/string_to_color.dart';
 
-class ShowCarsPage extends StatelessWidget {
+late String x = 'red';
+Color color1 = x as Color;
+
+class ShowCarsPage extends StatefulWidget {
   const ShowCarsPage({super.key});
 
   @override
+  State<ShowCarsPage> createState() => _ShowCarsPageState();
+}
+
+class _ShowCarsPageState extends State<ShowCarsPage> {
+  @override
+  late final List<CarModel> items;
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => CarsBloc()..add(GetCarsEvent()),
+      create: (context) => CarsBloc(),
       child: Builder(builder: (context) {
+        context.read<CarsBloc>().add(GetCarsEvent());
         return Scaffold(
           appBar: AppBar(
-            title: Center(
-                child: Text(
-              'All Cars',
-              style: TextStyle(fontSize: 30),
-            )),
+            title: BlocListener<CarsBloc, CarsState>(
+              listener: (context, state) {
+                if (state is SuccessToLoadCars) {
+                  print('car');
+                  ScaffoldMessenger.of(context).showSnackBar(new SnackBar(
+                    duration: Duration(seconds: 3),
+                    content: Text('Please Choose One of The Cars'),
+                    backgroundColor: Colors.green,
+                    behavior: SnackBarBehavior.floating,
+                  ));
+                } else if (state is SuccessToNavigateToCarDetailsPage) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ShowCarDetailsPage(
+                                car: state.car,
+                                color: state.color,
+                              )));
+                } else if (state is SuccessToNavigateToAddCarPage) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AddingCarsPage()));
+                } else if (state is SuccessToNavigateToUpdateCarPage) {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => UpdateCarPage()));
+                } else if (state is SuccessToNavigateToDeleteCarPage) {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => DeleteCarPage(cars: items )));
+                }
+              },
+              child: Center(
+                  child: Text(
+                'All Cars',
+                style: TextStyle(fontSize: 30),
+              )),
+            ),
           ),
           drawer: Drawer(
               child: ListView(
@@ -37,39 +83,42 @@ class ShowCarsPage extends StatelessWidget {
               ListTile(
                 title: Text('Add a new car'),
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AddingCarsPage()));
+                  context.read<CarsBloc>().add(NavigateToAddCarPageEvent());
+                  // Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //         builder: (context) => AddingCarsPage()));
                 },
               ),
               Divider(),
               ListTile(
                 title: Text('Edit car details'),
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>UpdateCarPage() ));
+                  context.read<CarsBloc>().add(NavigateToUpdateCarPageEvent());
+                  // Navigator.push(context,
+                  //     MaterialPageRoute(builder: (context) => UpdateCarPage()));
                 },
               ),
               Divider(),
               ListTile(
                 title: Text('Delete a car'),
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>DeleteCarPage() ));
+                  context.read<CarsBloc>().add(NavigateToDeleteCarPageEvent());
+                  // Navigator.push(context,
+                  //     MaterialPageRoute(builder: (context) => DeleteCarPage()));
                 },
               ),
               SizedBox(
                 height: 300,
               ),
               ListTile(
-                title: Text('Close drawer',style: TextStyle(fontSize: 25 , fontWeight: FontWeight.bold),),
+                title: Text(
+                  'Close drawer',
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                ),
                 onTap: () {
                   Navigator.pop(context);
+                  // context.read<CarsBloc>().add(GetCarsEvent());
                 },
               ),
             ],
@@ -77,72 +126,50 @@ class ShowCarsPage extends StatelessWidget {
           body: BlocBuilder<CarsBloc, CarsState>(
             builder: (context, state) {
               if (state is SuccessToLoadCars) {
-                return ListView.builder(
-                    itemCount: state.cars.cars.length,
-                    itemBuilder: (context, index) {
-                      late Color color;
-                      if (state.cars.cars[index].color == 'red') {
-                        color = Colors.red;
-                      }
-                      if (state.cars.cars[index].color == 'blue') {
-                        color = Colors.blue;
-                      }
-                      if (state.cars.cars[index].color == 'green') {
-                        color = Colors.green;
-                      }
-                      if (state.cars.cars[index].color == 'amber') {
-                        color = Colors.amber;
-                      }
-                      if (state.cars.cars[index].color == 'yellow') {
-                        color = Colors.yellow;
-                      }
-                      if (state.cars.cars[index].color == 'pink') {
-                        color = Colors.pink;
-                      }
-                      if (state.cars.cars[index].color == 'purple') {
-                        color = Colors.purple;
-                      }
-                      if (state.cars.cars[index].color == 'orange') {
-                        color = Colors.orange;
-                      }
-                      if (state.cars.cars[index].color == 'wight') {
-                        color = Colors.white;
-                      }
-                      if (state.cars.cars[index].color == 'gray') {
-                        color = Colors.grey;
-                      }
-                      if (state.cars.cars[index].color == 'black') {
-                        color = Colors.black26;
-                      }
-                      return Column(
-                        children: [
-                          ListTile(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ShowCarDetailsPage(
-                                            car: state.cars.cars[index],
-                                            color: color,
-                                          )));
-                            },
-                            leading: Text(state.cars.cars[index].id),
-                            trailing: CircleAvatar(
-                              child:
-                                  Image.network(state.cars.cars[index].avatar),
+                items = state.cars.cars;
+                return RefreshIndicator(
+                  onRefresh: () async {},
+                  child: ListView.builder(
+                      itemCount: items.length,
+                      itemBuilder: (context, index) {
+                        print(items[index].color);
+                        print(ColorUtils.stringToHexColor("red"));
+                        Color color =
+                            ColorUtils.stringToColor(items[index].color);
+                        print(color);
+
+                        return Column(
+                          children: [
+                            Card(
+                              child: ListTile(
+                                onTap: () {
+                                  context.read<CarsBloc>().add(
+                                      NavigateToCarDetailsPageEvent(
+                                          car: items[index], color: color));
+                                },
+                                leading:
+                                    CircleAvatar(child: Text(items[index].id)),
+                                trailing: CircleAvatar(
+                                  child: Image.network(
+                                    items[index].avatar,
+                                    errorBuilder:
+                                        (context, error, stackTrace) =>
+                                            FlutterLogo(),
+                                  ),
+                                ),
+                                tileColor: color,
+                                title: Text(items[index].name),
+                                subtitle: Text(items[index].price.toString()),
+                              ),
                             ),
-                            tileColor: color,
-                            title: Text(state.cars.cars[index].name),
-                            subtitle:
-                                Text(state.cars.cars[index].price.toString()),
-                          ),
-                          Divider(
-                            thickness: 1,
-                            color: Colors.white,
-                          ),
-                        ],
-                      );
-                    });
+                            Divider(
+                              thickness: 1,
+                              color: Colors.white,
+                            ),
+                          ],
+                        );
+                      }),
+                );
               } else if (state is FailedToLoadCars) {
                 return Center(
                   child: Text(state.errorModel.massege),

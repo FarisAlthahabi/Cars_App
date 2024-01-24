@@ -23,10 +23,30 @@ class FailedToLoadCars extends CarsState {
 }
 
 class SuccessToNavigateToCarDetailsPage extends CarsState {
-  String color;
+  Color color;
   CarModel car;
   SuccessToNavigateToCarDetailsPage({
     required this.color,
     required this.car,
+  });
+}
+
+class SuccessToNavigateToAddCarPage extends CarsState {}
+
+class SuccessToNavigateToDeleteCarPage extends CarsState {}
+
+class SuccessToNavigateToUpdateCarPage extends CarsState {}
+
+class SuccessToAddCar extends CarsState {
+  CarModel car;
+  SuccessToAddCar({
+    required this.car,
+  });
+}
+
+class FailedToAddCar extends CarsState {
+  ErrorModel errorModel;
+  FailedToAddCar({
+    required this.errorModel,
   });
 }

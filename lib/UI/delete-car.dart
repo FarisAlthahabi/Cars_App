@@ -1,10 +1,18 @@
-import 'package:cars_app/UI/add-car.dart';
-import 'package:cars_app/service/car-service.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'package:cars_app/UI/add-car.dart';
+import 'package:cars_app/model/car-model.dart';
+import 'package:cars_app/model/cars-model.dart';
+import 'package:cars_app/service/car-service.dart';
+
 class DeleteCarPage extends StatelessWidget {
-  const DeleteCarPage({super.key});
+  List<CarModel> cars;
+   DeleteCarPage({
+    Key? key,
+    required this.cars,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,15 +29,15 @@ class DeleteCarPage extends StatelessWidget {
         children: [
           ListTile(
             title: Padding(
-            padding: const EdgeInsets.only(top: 30),
-            child: Text('Enter the id of the car that you want to delete',
-                style: TextStyle(
-                    fontSize: 20,
-                    color: Color.fromRGBO(29, 30, 32, 1),
-                    fontStyle: FontStyle.normal,
-                    fontWeight: FontWeight.w500,
-                    fontFamily: 'Inter')),
-          ),
+              padding: const EdgeInsets.only(top: 30),
+              child: Text('Enter the id of the car that you want to delete',
+                  style: TextStyle(
+                      fontSize: 20,
+                      color: Color.fromRGBO(29, 30, 32, 1),
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: 'Inter')),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.only(left: 25, top: 10),
@@ -49,7 +57,9 @@ class DeleteCarPage extends StatelessWidget {
               padding: const EdgeInsets.only(left: 20, top: 370),
               child: InkWell(
                 onTap: () {
-                  CarsService().DeleteCar(IdController.text);
+                  if( int.parse(IdController.text)<= cars.length)
+                  {
+                    CarsService().DeleteCar(IdController.text);
                   ScaffoldMessenger.of(context).showSnackBar(new SnackBar(
                     duration: Duration(seconds: 1),
                     content: Text(
@@ -63,6 +73,25 @@ class DeleteCarPage extends StatelessWidget {
                     ),
                     backgroundColor: Colors.blue,
                   ));
+                  }
+                  else{
+                    ScaffoldMessenger.of(context).showSnackBar(new SnackBar(
+                    duration: Duration(seconds: 1),
+                    content: Text(
+                      'Car is not deleted , enter a correct id ',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                          fontStyle: FontStyle.normal),
+                    ),
+                    backgroundColor: Colors.red,
+                  ));
+                    
+                  }
+
+                  
                 },
                 child: Container(
                     child: Center(

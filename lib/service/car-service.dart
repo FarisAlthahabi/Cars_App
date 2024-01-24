@@ -21,44 +21,40 @@ class CarsService extends BaseService {
     }
   }
 
-  Future AddCar(String color, String name, String id, String avatar, num price,
-      num speed) async {
-    CarModel Car = CarModel(
-        color: color,
-        name: name,
-        id: id,
-        avatar: avatar,
-        price: price,
-        speed: speed);
-
+  Future AddCar(CarModel Car) async {
     response = await dio.post(BaseCarsUrl, data: Car.toJson());
-    if (response.statusCode == 201) {
-      print('Car is added successfully');
+    try {
+      if (response.statusCode == 201) {
+        print('Car is added successfully');
+        return Car;
+      } else {
+        return ErrorModel(massege: response.statusMessage!);
+      }
+    } on Exception catch (e) {
+      return ErrorModel(massege: e.toString());
     }
   }
 
   Future DeleteCar(String Id) async {
     response = await dio.delete(BaseCarsUrl + '/' + Id);
 
-    if (response.statusCode == 201) {
-      print('Car is deleted Successsfully');
+    try {
+      if (response.statusCode == 201) {
+        print('Car is deleted Successsfully');
+      } else {
+        print(response.statusMessage);
+        return 'error';
+      }
+    } on Exception catch (e) {
+      print(e.toString());
     }
   }
 
-  Future Updatecar(String color, String name, String id, String avatar,
-      num price, num speed) async {
-    CarModel Car = CarModel(
-        color: color,
-        name: name,
-        id: id,
-        avatar: avatar,
-        price: price,
-        speed: speed);
+  Future UpdateCar(CarModel Car) async {
+    response = await dio.put(BaseCarsUrl + '/' + Car.id, data: Car.toJson());
 
-    response = await dio.put(BaseCarsUrl + '/' + id, data: Car.toJson());
-
-    if (response.statusCode==200){
-      print('Car with id $id is updated Successsfully');
+    if (response.statusCode == 200) {
+      print('Car with id ${Car.id} is updated Successsfully');
     }
   }
 }

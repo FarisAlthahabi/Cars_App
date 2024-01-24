@@ -1,8 +1,8 @@
+import 'package:cars_app/model/car-model.dart';
 import 'package:cars_app/service/car-service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cars_app/UI/add-car.dart';
-
 
 class UpdateCarPage extends StatelessWidget {
   const UpdateCarPage({super.key});
@@ -10,7 +10,7 @@ class UpdateCarPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       appBar: AppBar(
+      appBar: AppBar(
         backgroundColor: Colors.blue,
         title: Center(
             child: Text(
@@ -18,7 +18,6 @@ class UpdateCarPage extends StatelessWidget {
           style: TextStyle(fontSize: 30),
         )),
       ),
-
       body: Center(
         child: Column(
           children: [
@@ -198,15 +197,17 @@ class UpdateCarPage extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 20, top: 70),
                 child: InkWell(
                   onTap: () {
-                    CarsService().Updatecar(
-                      ColorController.text,
-                      NameController.text,
-                      IdController.text,
-                      ImageController.text,
-                      num.parse(PriceController.text),
-                      num.parse(SpeedController.text),
+                    CarModel car = CarModel(
+                      color: ColorController.text,
+                      name: NameController.text,
+                      id: IdController.text,
+                      avatar: ImageController.text,
+                      price: num.parse(PriceController.text),
+                      speed: num.parse(SpeedController.text),
                     );
-                     ScaffoldMessenger.of(context).showSnackBar(new SnackBar(
+
+                    CarsService().UpdateCar(car);
+                    ScaffoldMessenger.of(context).showSnackBar(new SnackBar(
                       duration: Duration(seconds: 1),
                       content: Text(
                         'Car with id ${IdController.text} is updated successfully',
@@ -239,7 +240,6 @@ class UpdateCarPage extends StatelessWidget {
           ],
         ),
       ),
-
     );
   }
 }
